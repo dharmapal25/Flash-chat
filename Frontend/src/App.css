@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Input focus styling */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #0366d6 !important;
+  box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1) !important;
+}
+
+/* Button hover effects */
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Placeholder styling */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: #999;
+}
