@@ -1,5 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Circle } from "react-konva";
+
+const STORAGE_KEY = "konva-circles";
 
 export default function App() {
   const stageRef = useRef();
@@ -7,8 +9,21 @@ export default function App() {
   const [tool, setTool] = useState("circle");
   const [circles, setCircles] = useState([]);
   const [current, setCurrent] = useState(null);
-
   const [drawing, setDrawing] = useState(false);
+
+  // Load circles from localStorage on first render
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (saved) {
+      setCircles(JSON.parse(saved));
+    }
+  }, []);
+
+  // Save circles whenever they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(circles));
+  }, [circles]);
 
   function getMouse() {
     return stageRef.current.getPointerPosition();
@@ -29,7 +44,7 @@ export default function App() {
   }
 
   function handleMouseMove() {
-    if (!drawing) return;
+    if (!drawing || !current) return;
 
     const pos = getMouse();
 
@@ -45,13 +60,31 @@ export default function App() {
   }
 
   function handleMouseUp() {
-    if (!drawing) return;
+    if (!drawing || !current) return;
 
-    setCircles([...circles, current]);
+    setCircles((prev) => [...prev, current]);
 
     setCurrent(null);
-
     setDrawing(false);
+  }
+
+  // Update localStorage after dragging
+  function handleDragEnd(index, e) {
+    const updated = [...circles];
+
+    updated[index] = {
+      ...updated[index],
+      x: e.target.x(),
+      y: e.target.y(),
+    };
+
+    setCircles(updated);
+  }
+
+  // Clear all circles
+  function clearCanvas() {
+    setCircles([]);
+    localStorage.removeItem(STORAGE_KEY);
   }
 
   return (
@@ -70,6 +103,10 @@ export default function App() {
         <button onClick={() => setTool("select")}>
           Select
         </button>
+
+        <button onClick={clearCanvas}>
+          Clear
+        </button>
       </div>
 
       <Stage
@@ -80,7 +117,7 @@ export default function App() {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         style={{
-          background: "#f5f5f5",
+          background: "#bbbbbb",
         }}
       >
         <Layer>
@@ -90,6 +127,7 @@ export default function App() {
               {...circle}
               stroke="black"
               draggable={tool === "select"}
+              onDragEnd={(e) => handleDragEnd(index, e)}
             />
           ))}
 
