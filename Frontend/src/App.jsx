@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Stage, Layer, Circle, Rect } from "react-konva";
 import { socket } from "./socket";
+import ConnectedUser from "./Components/socket/ConnectedUser";
 
 export default function App() {
 
@@ -14,9 +15,9 @@ export default function App() {
 
   useEffect(() => {
 
-    socket.on("connected", (msg) => {
-      console.log(msg);
-    });
+    // socket.on("connected", (msg) => {
+    //   console.log("msg : ",msg);
+    // });
 
     socket.on("cur_stages", (data) => {
       console.log("Received", data);
@@ -24,7 +25,7 @@ export default function App() {
     });
 
     return () => {
-      socket.off("connected");
+      // socket.off("connected");
       socket.off("cur_stages");
     };
 
@@ -117,6 +118,8 @@ export default function App() {
         </button>
 
       </div>
+
+      <ConnectedUser/>
 
       <Stage
         ref={stageRef}

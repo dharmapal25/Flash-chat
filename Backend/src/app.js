@@ -17,7 +17,16 @@ let canvas = [];
 
 io.on("connection", (socket) => {
   console.log("Connected:", socket.id);
-  socket.emit("connected", "Welcome");
+  io.emit("connected",socket.id);
+
+  // private demo
+  socket.on("private",({userId,message})=> {
+    console.log(userId)
+    io.to(userId).emit("private", message);
+
+  })
+
+  socket.to()
 
   // send new user current canvas
   socket.emit("cur_stages", canvas);
