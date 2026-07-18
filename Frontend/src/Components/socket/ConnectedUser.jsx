@@ -12,20 +12,16 @@ function ConnectedUser() {
             setconncted(prevItems => [...prevItems, msg])
             console.log(conncted)
         });
-
         socket.on("private", (msg) => {
             console.log("data",msg);
-            setData(msg)
+            setData(msg.message)
         });
 
     }, [])
 
-
     return (
         <div>
             <h1> {data}, Connected users </h1>
-
-
             {
                 conncted.map((userId, idx) => {
                     return (
@@ -36,9 +32,6 @@ function ConnectedUser() {
                     )
                 })
             }
-
-
-
         </div>
     )
 }
